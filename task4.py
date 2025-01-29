@@ -9,22 +9,20 @@ t = np.arange(-5, 5, 0.01)
 
 # Определяем функцию для системы диф уравнений
 def diff_func(z1, t):
-    x, y, z = z1
+    k, y = z1
 
-    dx_dt = 3 * x - y + z
-    dy_dt = x + y + z
-    dz_dt = 4 * x - y + 4 * z
+    dk_dt = (-4*k) - (5 * y)
+    dy_dt = k
 
-    return dx_dt, dy_dt, dz_dt
+    return dk_dt, dk_dt
 
 
-x0 = -71
-y0 = 1
-z0 = -3
+k0 = 4
+y0 = -1
 
-zet = x0, y0, z0
+z0 = y0, k0
 
-sol = odeint(diff_func, zet, t)
+sol = odeint(diff_func, z0, t)
 
-plt.plot(t, sol[:])
+plt.plot(t, sol[:, 0])
 plt.show()

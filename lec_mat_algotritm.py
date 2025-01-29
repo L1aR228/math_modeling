@@ -4,28 +4,30 @@ from scipy.integrate import odeint
 
 # определяем переменную величину
 
-x = np.arange(-5, 5, 0.01)
+t = np.arange(0, 10, 0.01)
 
 
 # Определяем функцию для системы диф уравнений
-def diff_func(z1, x):
-    y, z = z1
+def diff_func(z, t):
+    theta, omega = z
 
-    dtheta_dt = y ** 2 * z
+    dtheta_dt = omega
 
-    domega_dt = z / x - y * z**2
+    domega_dt = - k * omega - c * np.sin(theta)
 
     return dtheta_dt, domega_dt
 
 
-theta0 = 1
-omega0 = -3
+theta0 = np.pi - 0.1
+omega0 = 0
 
 z0 = theta0, omega0
 
+k = 0.25
+c = 5
 
-sol = odeint(diff_func, z0, x)
+sol = odeint(diff_func, z0, t)
 
 
-plt.plot(x, sol[:], 'b')
+plt.plot(t, sol[:, 0], 'b')
 plt.show()

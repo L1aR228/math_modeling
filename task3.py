@@ -2,20 +2,27 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import odeint
 
-V = 100
-a0 = 10
-Y = -0.5
-m = 70  # Коэффициент роста(по условию)
-t = np.arange(0, 10, 0.1)
+# определяем переменную величину
+
+t = np.arange(-5, 5, 0.01)
 
 
-def model(a0, t, Y):
-    dNdt = a0 - Y / m * V ** 2
-    return dNdt
+# Определяем функцию для системы диф уравнений
+def diff_func(z1, t):
+    k, y = z1
+
+    dk_dt = np.sin(t) + np.cos(t)
+    dy_dt = k
+
+    return dk_dt, dk_dt
 
 
-N = odeint(model, m, t, args=(a0,))
+k0 = 0
+y0 = 3
 
-plt.figure(figsize=(10, 5))
-plt.plot(t, N, label='Деньги', color='blue')
+z0 = k0, y0
+
+sol = odeint(diff_func, z0, t)
+
+plt.plot(t, sol)
 plt.show()
