@@ -14,7 +14,7 @@ def diff_func(z1, t):
     dk_dt = (-4*k) - (5 * y)
     dy_dt = k
 
-    return dk_dt, dk_dt
+    return dk_dt, dy_dt
 
 
 k0 = 4
@@ -24,5 +24,5 @@ z0 = y0, k0
 
 sol = odeint(diff_func, z0, t)
 
-plt.plot(t, sol[:, 0])
+plt.plot(t, sol[:])
 plt.show()
