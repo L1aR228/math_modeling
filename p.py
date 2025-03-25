@@ -5,18 +5,18 @@ from matplotlib.animation import FuncAnimation
 
 # Создание пространства для анимации
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
-frames = 200
-t = np.linspace(0, 100, frames)
+frames = 500
+t = np.linspace(0, 400, frames)
 
 k = 0.02
 p = 0.01
 V = 0.01
 g = 9.81
-m = 0.01
-w = 0.3
-r = 0.1
-a = 1.3
-
+m = 0.0095
+w = 0.26
+r = 0.18
+a = 0.065
+gama = 0.04
 
 # Вертикальная турбулентность
 # Центростремительная сила
@@ -24,21 +24,21 @@ a = 1.3
 def move_func(s, t):
     x, vx, y, vy, z, vz = s
     dx_dt = vx
-    dvx_dt = -(vx ** 2 + vy ** 2) / (x ** 2 + y ** 2) * x + k * vx + (m * w ** 2 * r) + (m * vx ** 2 / r)
+    dvx_dt = -(vx ** 2 + vy ** 2) / (x ** 2 + y ** 2) * x + k * vx + (m * w ** 2 * r) + (m * vx ** 2 / r) - gama * (vx ** 2 + vy ** 2) / (x ** 2 + y ** 2) * x
     dy_dt = vy
-    dvy_dt = -(vx ** 2 + vy ** 2) / (x ** 2 + y ** 2) * y + k * vy + (m * w ** 2 * r) + (m * vy ** 2 / r)
+    dvy_dt = -(vx ** 2 + vy ** 2) / (x ** 2 + y ** 2) * y + k * vy + (m * w ** 2 * r) + (m * vy ** 2 / r) - gama * (vx ** 2 + vy ** 2) / (x ** 2 + y ** 2) * y
     dz_dt = vz
-    dvz_dt = -(vx ** 2 + vy ** 2) / (x ** 2 + y ** 2) * z + k * vz + (m * w ** 2 * r) + (m * vz ** 2 / r)
+    dvz_dt = k * vz + (m * w ** 2 * r) + p * V * g
 
     return dx_dt, dvx_dt, dy_dt, dvy_dt, dz_dt, dvz_dt
 
 
 x0 = 1
-vx0 = 0.2
+vx0 = 0.1
 y0 = 0
-vy0 = 0.4
+vy0 = 0.2
 z0 = 1
-zv0 = 0.8
+zv0 = 0.4
 s0 = x0, vx0, y0, vy0, z0, zv0
 
 sol = odeint(move_func, s0, t)
@@ -56,7 +56,7 @@ def animate(i):
     return ball, line
 
 
-edge = 3
+edge = 10
 ax.set_xlim([-edge, edge])
 ax.set_xlabel('X')
 

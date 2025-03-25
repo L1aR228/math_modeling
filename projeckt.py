@@ -3,49 +3,70 @@ from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-# Определяем переменную величину
-frames = 200
-t = np.linspace(0, 10, frames)
-
+# Создание пространства для анимации
+fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+frames = 500
+t = np.linspace(0, 400, frames)
 
 k = 0.02
-# Определяем функцию для системы диф. уравнений
+p = 0.01
+V = 0.01
+g = 9.81
+m = 0.0095
+w = 0.26
+r = 0.18
+a = 0.065
+gama = 0.04
+
+# Вертикальная турбулентность
+# Центростремительная сила
+
 def move_func(s, t):
-    x, vx, y, vy = s
+    x, vx, y, vy, z, vz = s
     dx_dt = vx
-    dvx_dt = -(vx ** 2 + vy ** 2) / (x ** 2 + y ** 2) * x + k * vx
+    dvx_dt = -(vx ** 2 + vy ** 2) / (x ** 2 + y ** 2) * x + k * vx + (m * w ** 2 * r) + (m * vx ** 2 / r) - gama * (vx ** 2 + vy ** 2) / (x ** 2 + y ** 2) * x
     dy_dt = vy
-    dvy_dt = -(vx ** 2 + vy ** 2) / (x ** 2 + y ** 2) * y + k * vx
+    dvy_dt = -(vx ** 2 + vy ** 2) / (x ** 2 + y ** 2) * y + k * vy + (m * w ** 2 * r) + (m * vy ** 2 / r) - gama * (vx ** 2 + vy ** 2) / (x ** 2 + y ** 2) * y
+    dz_dt = vz
+    dvz_dt = k * vz + (m * w ** 2 * r) + p * V * g
 
-    return dx_dt, dvx_dt, dy_dt, dvy_dt
+    return dx_dt, dvx_dt, dy_dt, dvy_dt, dz_dt, dvz_dt
 
-
-# Определяем начальные значения и параметры
 
 x0 = 1
-vx0 = 0
+vx0 = 0.1
 y0 = 0
-vy0 = 0.5
+vy0 = 0.2
+z0 = 1
+zv0 = 0.4
+s0 = x0, vx0, y0, vy0, z0, zv0
 
-z0 = x0, vx0, y0, vy0
+sol = odeint(move_func, s0, t)
 
-sol = odeint(move_func, z0, t)
-
-fig, ax = plt.subplots()
-plt.axis('equal')
-ball, = plt.plot([], [], 'o', color='r')
-ball_line, = plt.plot([], [], '-', color='r')
+ball, = ax.plot([], [], [], 'o', color='b')
+line, = ax.plot([], [], [], '-', color='b')
 
 
 def animate(i):
     ball.set_data([sol[i][0]], [sol[i][2]])
-    ball_line.set_data(sol[:i, 0], sol[:i, 2])
+    ball.set_3d_properties([sol[i][3]])
+
+    line.set_data(sol[:i + 1, 0], sol[:i + 1, 2])
+    line.set_3d_properties(sol[:i + 1, 3])
+    return ball, line
 
 
-ani = FuncAnimation(fig, animate, frames=frames, interval=30)
+edge = 10
+ax.set_xlim([-edge, edge])
+ax.set_xlabel('X')
 
-edge = 2
-ax.set_xlim(-edge, edge)
-ax.set_ylim(-edge, edge)
+ax.set_ylim([-edge, edge])
+ax.set_ylabel('Y')
+
+ax.set_zlim([-edge, edge])
+ax.set_zlabel('Z')
+
+# Анимирование
+ani = FuncAnimation(fig, animate, frames=frames, interval=30, blit=True)
 
 plt.show()
