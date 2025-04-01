@@ -16,7 +16,7 @@ m = 0.0095
 w = 0.26
 r = 0.18
 a = 0.065
-gama = 0.04
+gama = 0.04003
 
 def move_func(s, t):
     x, vx, y, vy, z, vz,\
@@ -65,15 +65,15 @@ line2, = ax.plot([], [], [], '-', color='r')
 def animate(i):
     # Первое тело
     ball1.set_data([sol[i][0]], [sol[i][2]])
-    ball1.set_3d_properties([sol[i][3]])
+    ball1.set_3d_properties([sol[i][5]])
     line1.set_data(sol[:i + 1, 0], sol[:i + 1, 2])
-    line1.set_3d_properties(sol[:i + 1, 3])
+    line1.set_3d_properties(sol[:i + 1, 5])
 
     # Второе тело
     ball2.set_data([sol[i][6]], [sol[i][8]])
-    ball2.set_3d_properties([sol[i][3]])
+    ball2.set_3d_properties([sol[i][5]])
     line2.set_data(sol[:i + 1, 6], sol[:i + 1, 8])
-    line2.set_3d_properties(sol[:i + 1, 3])
+    line2.set_3d_properties(sol[:i + 1, 5])
 
     return ball1, line1, ball2, line2
 
@@ -91,4 +91,4 @@ ax.set_zlabel('Z')
 
 ani = FuncAnimation(fig, animate, frames=frames, interval=30, blit=True)
 
-plt.show()
+ani.save('3.gif')

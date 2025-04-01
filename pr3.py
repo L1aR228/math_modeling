@@ -5,7 +5,7 @@ from matplotlib.animation import FuncAnimation
 
 
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
-frames = 500
+frames = 5000
 t = np.linspace(0, 400, frames)
 
 k = 0.02
@@ -143,4 +143,4 @@ ax.set_zlabel('Z')
 
 ani = FuncAnimation(fig, animate, frames=frames, interval=30, blit=True)
 
-plt.show()
+ani.save('1.gif')
